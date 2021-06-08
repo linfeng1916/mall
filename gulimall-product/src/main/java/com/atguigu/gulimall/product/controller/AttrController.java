@@ -96,6 +96,16 @@ public class AttrController {
         return R.ok();
     }
 
+    ///product/attr/update/{spuId}
+    @PostMapping("/update/{spuId}")
+    public R updateSpuAttr(@PathVariable("spuId") Long spuId,
+                           @RequestBody List<ProductAttrValueEntity> entities) {
+        productAttrValueService.updateSpuAttr(spuId, entities);
+
+        return R.ok();
+    }
+
+
     /**
      * 删除
      */

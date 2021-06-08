@@ -33,10 +33,11 @@ public class WareSkuController {
 
     /**
      * 列表
+     * wareId: 123,//仓库id
+     * skuId: 123//商品id
      */
     @RequestMapping("/list")
-   // @RequiresPermissions("ware:waresku:list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = wareSkuService.queryPage(params);
 
         return R.ok().put("page", page);

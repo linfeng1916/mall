@@ -208,5 +208,52 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         this.baseMapper.insert(spuInfoEntity);
     }
 
+    /**
+     * 请求参数
+     * {
+     * page: 1,//当前页码
+     * limit: 10,//每页记录数
+     * sidx: 'id',//排序字段
+     * order: 'asc/desc',//排序方式
+     * key: '华为',//检索关键字
+     * catelogId: 6,//三级分类id
+     * brandId: 1,//品牌id
+     * status: 0,//商品状态
+     * }
+     */
+    @Override
+    public PageUtils queryPageByCondition(Map<String, Object> params) {
+
+        QueryWrapper<SpuInfoEntity> wrapper = new QueryWrapper<>();
+
+        String key = (String) params.get("key");
+        if (!StringUtils.isEmpty(key)) {
+            wrapper.and((obj) -> {
+                obj.eq("id", key).or().like("spu_name", key);
+            });
+        }
+
+        String catelogId = (String) params.get("catelogId");
+        if (!StringUtils.isEmpty(catelogId) && !"0".equalsIgnoreCase(catelogId)) {
+            wrapper.eq("catalog_id", catelogId);
+        }
+
+        String brandId = (String) params.get("brandId");
+        if (!StringUtils.isEmpty(brandId) && !"0".equalsIgnoreCase(brandId)) {
+            wrapper.eq("brand_id", brandId);
+        }
+
+        String status = (String) params.get("status");
+        if (!StringUtils.isEmpty(status)) {
+            wrapper.eq("publish_status", status);
+        }
+
+        IPage<SpuInfoEntity> page = this.page(
+                new Query<SpuInfoEntity>().getPage(params), wrapper
+        );
+        return new PageUtils(page);
+    }
+
+
 
 }
