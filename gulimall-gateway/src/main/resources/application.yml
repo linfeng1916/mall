@@ -11,3 +11,34 @@ spring:
           uri: https://www.qq.com
           predicates:
             - Query=url,qq
+
+        - id: product_route
+          uri: lb://gulimall-product
+          predicates:
+            #            - Path=/api/product/**,/hello
+            - Path=/api/product/**
+          filters:
+            - RewritePath=/api/(?<segment>.*),/$\{segment}
+
+        - id: third-party
+          uri: lb://gulimall-third-party
+          predicates:
+            - Path=/api/thirdparty/**
+          filters:
+            - RewritePath=/api/thirdparty/(?<segment>.*),/$\{segment}
+
+        #member
+        - id: member-route
+          uri: lb://gulimall-member
+          predicates:
+            - Path=/api/member/**
+          filters:
+            - RewritePath=/api/(?<segment>.*),/$\{segment}
+
+
+        - id: admin_route
+          uri: lb://renren-fast #负载均衡到哪里
+          predicates: #你的判断依据是：
+            - Path=/api/**
+          filters: #路径重写 下面是！
+            - RewritePath=/api/(?<segment>.*),/renren-fast/$\{segment}

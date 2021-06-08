@@ -2,12 +2,13 @@ spring:
   datasource:
     username: root
     password: root
-    url: jdbc:mysql://121.196.36.170:3306/gulimall_pms
+    url: jdbc:mysql://121.196.36.170:3306/gulimall_pms?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.jdbc.Driver
   cloud:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
+
   application:
     name: gulimall-product
 #  cloud:

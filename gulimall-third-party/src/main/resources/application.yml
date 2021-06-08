@@ -1,0 +1,55 @@
+server:
+  port: 30000
+spring:
+  cloud:
+    #配置nacos
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    #配置sentinel
+#    sentinel:
+#      transport:
+#        dashboard: localhost:8080
+#        #控制台的port
+#        port: 8719
+    #阿里云对象上传
+    alicloud:
+      access-key: LTAI5tMnAKcoo3i1RYnfcFL5
+      secret-key: CJHGTv2kdDzuyZYRPfq9DR5OcnPctL
+      oss:
+        endpoint: oss-cn-beijing.aliyuncs.com
+        bucket: gulimall-linfeng
+      #阿里云短信服务
+#      sms:
+#        host: https://smssend.shumaidata.com
+#        path: /sms/send
+#        templateId: M09DD535F4
+#        appcode:
+
+  application:
+    name: gulimall-third-party
+  #配置Zipkin链路追踪可视化展示
+#  zipkin:
+#    base-url: http://10.211.55.3:9411/
+#    #关闭自己的服务发现功能
+#    discovery-client-enabled: false
+#    sender:
+#      #设置采用http的方式
+#      type: web
+#  sleuth:
+#    sampler:
+#      #配置sleuth采样器 100%
+#      probability: 1
+#
+##management.endpoints.web.exposure.include=*
+##配置actuator统计审计信息 配合sentinel
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: all
+
+##开启feign sentinel 熔断保护
+#feign:
+#  sentinel:
+#    enabled: true
