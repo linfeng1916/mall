@@ -30,3 +30,11 @@ server:
 logging:
   level:
     com.atguigu.gulimall: debug
+
+  redis:
+    host: 192.168.159.128
+    port: 6379
+  #整合Spring Session 指定session是存到redis里
+  session:
+    store-type: redis
+  #配置Zipkin链路追踪可视化展示

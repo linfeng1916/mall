@@ -20,11 +20,10 @@ spring:
         endpoint: oss-cn-beijing.aliyuncs.com
         bucket: gulimall-linfeng
       #阿里云短信服务
-#      sms:
-#        host: https://smssend.shumaidata.com
-#        path: /sms/send
-#        templateId: M09DD535F4
-#        appcode:
+      sms:
+        host: https://dxyzm.market.alicloudapi.com
+        path: /chuangxin/dxjk
+        appcode: 195b6a52a0e64b3cbfb6fe0887e7a8b3
 
   application:
     name: gulimall-third-party

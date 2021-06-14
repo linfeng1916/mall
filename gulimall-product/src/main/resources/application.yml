@@ -9,6 +9,7 @@ spring:
       discovery:
         server-addr: 127.0.0.1:8848
 
+
   application:
     name: gulimall-product
 #  cloud:
@@ -17,6 +18,17 @@ spring:
 #        server-addr: 127.0.0.1:8848
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
+  #关闭thymeleaf缓存 开发期间就能看到实时效果；上线以后就要打开缓存了(效果不大)
+  thymeleaf:
+    cache: false
+    #cache: true
+  #配置Redis缓存
+  redis:
+    host: 121.196.36.170
+    port: 6379
+
+  session:
+    store-type: redis
 
 
 mybatis-plus:
