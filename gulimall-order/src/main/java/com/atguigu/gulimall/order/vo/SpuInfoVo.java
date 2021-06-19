@@ -5,11 +5,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.util.Date;
 
-/**
- * @author 孟享广
- * @date 2021-02-09 4:39 下午
- * @description
- */
+
 @Data
 public class SpuInfoVo {
 

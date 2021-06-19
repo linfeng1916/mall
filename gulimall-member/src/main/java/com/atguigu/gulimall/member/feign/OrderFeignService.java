@@ -7,11 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Map;
 
-/**
- * @author 孟享广
- * @date 2021-02-18 12:35 下午
- * @description
- */
+
 //告诉spring cloud 这个接口是一个远程客户端 调用远程服务
 @FeignClient("gulimall-order")//这个远程服务
 public interface OrderFeignService {

@@ -7,16 +7,13 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * @author 孟享广
- * @date 2021-02-09 2:50 下午
- * @description
- */
+
 @Data
 public class OrderCreatTo {
 
     private OrderEntity order;
 
+    //可能有多个订单 需要用集合表示 =为每一个订单创建一个订单项
     private List<OrderItemEntity> orderItems;
 
     private BigDecimal payPrice;

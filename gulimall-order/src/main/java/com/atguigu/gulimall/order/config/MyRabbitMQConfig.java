@@ -55,7 +55,7 @@ public class MyRabbitMQConfig {
 //        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
 //    }
 
-    //容器中的组建Queue Exchange Binding 都会自动创建（前提是RabbitMQ没有）
+    //容器中的组建Queue Exchange Binding 都会自动创建（前提是RabbitMQ没有） 延时队列
     @Bean
     public Queue orderDelayQueue() {
 

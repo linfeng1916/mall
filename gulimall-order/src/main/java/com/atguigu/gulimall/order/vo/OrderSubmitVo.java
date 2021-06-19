@@ -5,11 +5,7 @@ import lombok.ToString;
 
 import java.math.BigDecimal;
 
-/**
- * @author 孟享广
- * @date 2021-02-09 1:17 下午
- * @description
- */
+
 @ToString
 @Data
 public class OrderSubmitVo {
@@ -18,7 +14,7 @@ public class OrderSubmitVo {
     //支付方式
     private Integer payType;
 
-    //无需提交购买的商品，去购物车在获取一遍
+    //无需提交购买的商品，去购物车在获取一遍 需要重新计算
 
     //优惠、发票....
 

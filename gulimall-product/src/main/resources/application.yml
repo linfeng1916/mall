@@ -1,21 +1,30 @@
+server:
+  port: 10000
 spring:
   datasource:
-    username: root
-    password: root
-    url: jdbc:mysql://121.196.36.170:3306/gulimall_pms?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://121.196.36.170:3306/gulimall_pms?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+      username: root
+      password: root
+  #      Nacos 注册中心
   cloud:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
-
+    #配置sentinel
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+        #控制台的port
+        port: 8719
 
   application:
     name: gulimall-product
-#  cloud:
-#    nacos:
-#      discovery:
-#        server-addr: 127.0.0.1:8848
+  #        阿里云对象上传
+
+  #日期格式化
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
   #关闭thymeleaf缓存 开发期间就能看到实时效果；上线以后就要打开缓存了(效果不大)
@@ -26,20 +35,52 @@ spring:
   redis:
     host: 121.196.36.170
     port: 6379
-
+  #整合Spring Session 指定session是存到redis里
   session:
     store-type: redis
-
+  #配置Zipkin链路追踪可视化展示
+  zipkin:
+    base-url: http://121.196.36.170:9411/
+    #关闭自己的服务发现功能
+    discovery-client-enabled: false
+    sender:
+      #设置采用http的方式
+      type: web
+  sleuth:
+    sampler:
+      #配置sleuth采样器 100%
+      probability: 1
 
 mybatis-plus:
+  #  告诉Mybatis Plus 扫描哪里
   mapper-locations: classpath:/mapper/**/*.xml
+  #  主键自增！
   global-config:
     db-config:
       id-type: auto
-      logic-delete-value: 1
-      logic-not-delete-value: 0
-server:
-  port: 10100
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+
 logging:
   level:
-    com.atguigu.gulimall: debug
+    #上线后，可以降低日志级别
+    #    com.atguigu.gulimall: debug
+    #    com.atguigu.gulimall: error
+    com.atguigu.gulimall: info
+    #openfeign链路追踪
+    org.springframework.cloud.openfeign: debug
+    #sleuth链路追踪
+    org.springframework.cloud.sleuth: debug
+
+#management.endpoints.web.exposure.include=*
+#配置actuator统计审计信息 配合sentinel
+management:
+  endpoints:
+    web:
+      exposure:
+        include: all
+
+#开启feign sentinel 熔断保护
+feign:
+  sentinel:
+    enabled: true

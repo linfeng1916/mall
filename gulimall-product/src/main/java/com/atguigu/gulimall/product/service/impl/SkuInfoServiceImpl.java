@@ -4,6 +4,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.atguigu.common.utils.R;
 import com.atguigu.gulimall.product.entity.SkuImagesEntity;
 import com.atguigu.gulimall.product.entity.SpuInfoDescEntity;
+import com.atguigu.gulimall.product.feign.SeckillFeignService;
 import com.atguigu.gulimall.product.service.*;
 import com.atguigu.gulimall.product.vo.SeckillSkuInfoVo;
 import com.atguigu.gulimall.product.vo.SkuItemSaleAttrVo;
@@ -49,8 +50,8 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
     @Autowired
     ThreadPoolExecutor executor;
 
-//    @Autowired
-//    SeckillFeignService seckillFeignService;
+    @Autowired
+    SeckillFeignService seckillFeignService;
 
 
 
@@ -186,20 +187,20 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoDao, SkuInfoEntity> i
             skuItemVo.setImages(images);
         }, executor);
 
- //       CompletableFuture<Void> seckillFuture = CompletableFuture.runAsync(() -> {
-//            //查询当前sku是否参加秒杀优惠
-//            R r = seckillFeignService.getSkuSeckillInfo(skuId);
-//            if (r.getCode() == 0) {
-//                SeckillSkuInfoVo seckillSkuRedisVo = r.getData(new TypeReference<SeckillSkuInfoVo>() {
-//                });
-//                skuItemVo.setSeckillSkuInfoVo(seckillSkuRedisVo);
-//            }
-//        }, executor);
+        CompletableFuture<Void> seckillFuture = CompletableFuture.runAsync(() -> {
+            //查询当前sku是否参加秒杀优惠
+            R r = seckillFeignService.getSkuSeckillInfo(skuId);
+            if (r.getCode() == 0) {
+                SeckillSkuInfoVo seckillSkuRedisVo = r.getData(new TypeReference<SeckillSkuInfoVo>() {
+                });
+                skuItemVo.setSeckillSkuInfoVo(seckillSkuRedisVo);
+            }
+        }, executor);
 
 
         //异步编排 - 阻塞等结果
         //等待所有1 2 3 4 5任务都完成 infoFuture可以省略  get方法阻塞
-     //   CompletableFuture.allOf(saleAttrFuture, descFuture, baseFuture, imagesFuture, seckillFuture).get();
+     CompletableFuture.allOf(saleAttrFuture, descFuture, baseFuture, imagesFuture, seckillFuture).get();
 
         return skuItemVo;
     }

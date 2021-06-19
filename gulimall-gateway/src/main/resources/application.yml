@@ -80,3 +80,48 @@ spring:
           uri: lb://gulimall-order
           predicates:
             - Host=order.gulimall.com
+
+        #ware服务转发  没用到
+        - id: gulimall_ware_route
+          uri: lb://gulimall-ware
+          predicates:
+            - Host=ware.gulimall.com
+
+        #member服务转发
+        - id: gulimall_member_route
+          uri: lb://gulimall-member
+          predicates:
+            - Host=member.gulimall.com
+
+        #seckill服务转发
+        - id: gulimall_seckill_route
+          uri: lb://gulimall-seckill
+          predicates:
+            - Host=seckill.gulimall.com
+  ##前段项目，/api
+  ## http://localhost:88/api/captcha.jpg   http://localhost:8080/renren-fast/captcha.jpg
+  ## http://localhost:88/api/product/category/list/tree http://localhost:10000/product/category/list/tree
+
+  #配置Zipkin链路追踪可视化展示
+  zipkin:
+    base-url: http://121.196.36.170:9411/
+    #关闭自己的服务发现功能
+    discovery-client-enabled: false
+    sender:
+      #设置采用http的方式
+      type: web
+  sleuth:
+    sampler:
+      #配置sleuth采样器 100%
+      probability: 1
+#management.endpoints.web.exposure.include=*
+#配置actuator统计审计信息 配合sentinel
+management:
+  endpoints:
+    web:
+      exposure:
+        include: all
+
+          ##开启feign sentinel 熔断保护
+          #feign:
+          #  sentinel:

@@ -8,11 +8,7 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
 import org.springframework.session.web.http.CookieSerializer;
 import org.springframework.session.web.http.DefaultCookieSerializer;
 
-/**
- * @author 孟享广
- * @date 2021-02-01 1:07 下午
- * @description
- */
+
 //开启Spring Session功能 redis
 @EnableRedisHttpSession
 @Configuration

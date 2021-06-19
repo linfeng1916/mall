@@ -1,63 +1,63 @@
 server:
   port: 20000
-##  #    整合Spring Session 过期时间
-##  servlet:
-##    session:
-##      timeout: 30m
-##spring:
-  cloud:
+  #    整合Spring Session 过期时间
+  servlet:
+    session:
+      timeout: 30m
+spring:
+#  cloud:
     #Nacos 注册中心
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
     #配置sentinel
-#    sentinel:
-#      transport:
-#        dashboard: localhost:8080
-#        #控制台的port
-#        port: 8719
-#    #日期格式化
-#  jackson:
-#    date-format: yyyy-MM-dd HH:mm:ss
-#  #    关闭thymeleaf缓存 开发期间就能看到实时效果；上线以后就要打开缓存了(效果不大)
-#  thymeleaf:
-#    cache: false
-#  #    cache: true
-#  #    配置Redis缓存
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+        #控制台的port
+        port: 8719
+    #日期格式化
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+  #    关闭thymeleaf缓存 开发期间就能看到实时效果；上线以后就要打开缓存了(效果不大)
+  thymeleaf:
+    cache: false
+  #    cache: true
+  #    配置Redis缓存
   redis:
     host: 121.196.36.170
     port: 6379
-#  #    整合Spring Session 指定session是存到redis里
-#  session:
-#    store-type: redis
-#  #配置Zipkin链路追踪可视化展示
-#  zipkin:
-#    base-url: http://10.211.55.3:9411/
-#    #关闭自己的服务发现功能
-#    discovery-client-enabled: false
-#    sender:
-#      #设置采用http的方式
-#      type: web
-#  sleuth:
-#    sampler:
-#      #配置sleuth采样器 100%
-#      probability: 1
-##logging:
-##  level:
-##    #上线后，可以降低日志级别
-###    com.atguigu.gulimall: debuug
-##    com.atguigu.gulimall: error
-#
-##management.endpoints.web.exposure.include=*
-##配置actuator统计审计信息 配合sentinel
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        include: all
-#
-##开启feign sentinel 熔断保护
-#feign:
-#  sentinel:
+  #    整合Spring Session 指定session是存到redis里
+  session:
+    store-type: redis
+  #配置Zipkin链路追踪可视化展示
+  zipkin:
+    base-url: http://10.211.55.3:9411/
+    #关闭自己的服务发现功能
+    discovery-client-enabled: false
+    sender:
+      #设置采用http的方式
+      type: web
+  sleuth:
+    sampler:
+      #配置sleuth采样器 100%
+      probability: 1
+logging:
+  level:
+    #上线后，可以降低日志级别
+#    com.atguigu.gulimall: debuug
+    com.atguigu.gulimall: error
 
-#    enabled: true
+#management.endpoints.web.exposure.include=*
+#配置actuator统计审计信息 配合sentinel
+management:
+  endpoints:
+    web:
+      exposure:
+        include: all
+
+##开启feign sentinel 熔断保护
+feign:
+  sentinel:
+
+    enabled: true

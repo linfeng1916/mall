@@ -9,11 +9,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * @author 孟享广
- * @date 2021-02-07 5:03 下午
- * @description 解决Feign远程调用请求头丢失
- */
+
 @Configuration
 public class GuliFeignConfig {
 

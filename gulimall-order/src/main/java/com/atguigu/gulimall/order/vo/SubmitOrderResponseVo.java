@@ -3,11 +3,7 @@ package com.atguigu.gulimall.order.vo;
 import com.atguigu.gulimall.order.entity.OrderEntity;
 import lombok.Data;
 
-/**
- * @author 孟享广
- * @date 2021-02-09 1:47 下午
- * @description
- */
+
 @Data
 public class SubmitOrderResponseVo {
 

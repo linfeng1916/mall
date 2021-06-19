@@ -127,6 +127,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             List<Long> ids = items.stream().map((item) -> {
                 return item.getSkuId();
             }).collect(Collectors.toList());
+
             //远程查看库存
             R r = wareFeignService.getSkuHasStock(ids);
             List<SkuStockVo> skuStockVos = r.getData(new TypeReference<List<SkuStockVo>>() {
@@ -143,17 +144,27 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
         //4 其他的数据自动计算
 
-        //TODO 5 防重令牌
+        //TODO 5 防重令牌   防止用户反复提交
         String token = UUID.randomUUID().toString().replace("-", "");
         //给服务器一个 并指定过期时间
         redisTemplate.opsForValue().set(OrderConstant.USER_ORDER_TOKEN_PREFIX + memberResVo.getId(), token, 30, TimeUnit.MINUTES);
-        //给页面一个
+        //给页面一个token
         confirmVo.setOrderToken(token);
 
         CompletableFuture.allOf(getAddressFuture, cartFuture).get();
 
         return confirmVo;
     }
+
+    /*
+    *  * @EnableRabbit
+     * @Transactional 本地事务失效问题
+     * 同一个对象内事务互调默认方法 原因 绕过了代理对象 事务使用代理对象来控制
+     * 解决：使用代理对象调用事务方法
+     * 1）、引入aop-starter; spring-boot-starter-aop 引入aspectj
+     * 2）、@EnableAspectjAutoProxy(exposeProxy = true) 开启 aspectj 动态代理功能 以后所有动态代理都是aspectj
+    * */
+
 
     /**
      * 提交订单 去支付
@@ -163,8 +174,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
      * (isolation = Isolation.REPEATABLE_READ) MySql默认隔离级别 - 可重复读
      */
     //分布式事务 全局事务
-    //@GlobalTransactional 不用
-    @Transactional
+//  @GlobalTransactional
+    @Transactional  //本地事务  在分布式 操作各种不同的数据库 只能保证自己的数据 能回滚
     @Override
     public SubmitOrderResponseVo submitOrder(OrderSubmitVo vo) {
 
@@ -177,10 +188,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         MemberResVo memberResVo = LoginUserInterceptor.loginUser.get();
         responseVo.setCode(0);
         //1、首先验证令牌
-        //0失败 - 1成功 ｜ 不存在0 存在 删除？1：0
+        //0失败 -  1成功 ｜ 不存在0 存在 删除？1：0
         String script = "if redis.call('get',KEYS[1]) == ARGV[1] then return redis.call('del',KEYS[1]) else return 0 end";
         String orderToken = vo.getOrderToken();
-        //原子验证令牌 和 删除令牌
+        //原子验证令牌 和 删除令牌  使用lur脚本
         Long result = redisTemplate.execute(new DefaultRedisScript<Long>(script, Long.class),
                 Arrays.asList(OrderConstant.USER_ORDER_TOKEN_PREFIX + memberResVo.getId()),
                 orderToken);
@@ -193,6 +204,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             //下单 去创建订单 验证令牌 验证价格 锁库存
             //TODO 3 保存订单
             OrderCreatTo orderCreatTo = creatOrder();
+            //对比价格
             BigDecimal payAmount = orderCreatTo.getOrder().getPayAmount();
             BigDecimal payPrice = vo.getPayPrice();
             //金额对比
@@ -256,7 +268,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
         //先来查询当前这个订单的最新状态
         OrderEntity orderEntity = this.getById(entity.getId());
-        //需要关单的状态是：代付款 0
+        //需要关单的状态是：代付款  超过时间没有付款，就取消这个订单 同时给给消息队列发送消息 解锁库存
         if (orderEntity.getStatus() == OrderStatusEnum.CREATE_NEW.getCode()) {
             //关单
             OrderEntity updateOrder = new OrderEntity();
@@ -399,7 +411,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         OrderCreatTo orderCreatTo = new OrderCreatTo();
 
         //orderCreatTo 第1个大属性OrderEntity order
-        //生成一个订单号
+        //生成一个订单号   数据库中订单号必须唯一
         String orderSn = IdWorker.getTimeId();
         OrderEntity order = buildOrderEntity(orderSn);
         orderCreatTo.setOrder(order);
@@ -408,7 +420,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         List<OrderItemEntity> orderItems = buildList_OrderItemEntity(orderSn);
         orderCreatTo.setOrderItems(orderItems);
 
-        //orderCreatTo 第3个大属性BigDecimal payPrice;
+        //orderCreatTo 第3个大属性BigDecimal payPrice;   检验价格
         computePrice(order, orderItems);
         //orderCreatTo 第4个大属性BigDecimal fare;
         return orderCreatTo;
@@ -441,7 +453,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 
     private List<OrderItemEntity> buildList_OrderItemEntity(String orderSn) {
 
-        //这是最后一次确定每一个购物项的价格了
+        //这是最后一次确定每一个购物项的价格了  获取购物车里面的订单的信息
         List<OrderItemVo> orderItemVos = cartFeignService.currentUserItems();
         if (orderItemVos != null && orderItemVos.size() > 0) {
             List<OrderItemEntity> collect = orderItemVos.stream().map((item) -> {

@@ -5,8 +5,6 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 /**
- * @author 孟享广
- * @date 2021-02-08 4:58 下午
  * @description
  */
 @Data
