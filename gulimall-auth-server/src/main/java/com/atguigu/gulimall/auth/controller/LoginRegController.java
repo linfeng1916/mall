@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 @Controller
 public class LoginRegController {
 
+    //第三方服务主要使用用上传oos对象，发送验证码 短信的。
     @Autowired
     ThirdPartyFeignService thirdPartyFeignService;
 
@@ -162,7 +163,7 @@ public class LoginRegController {
     }
 
     /**
-     * 处理已经登录的用户，误操作到登录页面
+     * 处理已经登录的用户，读操作到登录页面
      */
     @GetMapping("/login.html")
     public String loginPage(HttpSession session) {

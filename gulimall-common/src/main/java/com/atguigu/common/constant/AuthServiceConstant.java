@@ -1,10 +1,6 @@
 package com.atguigu.common.constant;
 
-/**
- * @author 孟享广
- * @date 2021-01-28 5:16 下午
- * @description
- */
+
 public class AuthServiceConstant {
 
     //验证码redis的前缀

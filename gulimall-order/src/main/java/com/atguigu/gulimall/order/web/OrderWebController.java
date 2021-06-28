@@ -23,7 +23,7 @@ public class OrderWebController {
 
     /**
      * 去结算
-     * 给订单确认ye返回数据
+     * 给订单确认数据返回数据
      */
     @GetMapping("/toTrade")
     public String toTrade(Map<String, OrderConfirmVo> map) throws ExecutionException, InterruptedException {

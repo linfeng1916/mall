@@ -201,8 +201,6 @@ SearchFeignService searchFeignService;
                         log.error("远程保存sku优惠信息失败");
                     }
                 }
-
-
             });
         }
     }
@@ -275,7 +273,7 @@ SearchFeignService searchFeignService;
         List<Long> attrIds = baseAttrs.stream().map((attr) -> {
             return attr.getAttrId();
         }).collect(Collectors.toList());
-        List<Long> searchAttrIds = attrService.selectSearchAttrIds(attrIds);
+        List<Long> searchAttrIds = attrService.selectSearchAttrIds(attrIds);//得到所有规格属性的id 获取对应的规格属性
         Set<Long> idSet = new HashSet<>(searchAttrIds);
 
         List<SkuEsModel.Attrs> attrsList = baseAttrs.stream().filter(attr -> {
